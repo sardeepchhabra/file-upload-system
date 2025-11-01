@@ -1,18 +1,11 @@
-// Mock PDF signing service that simulates a server-side signing operation
-
 export interface SigningResponse {
   success: boolean;
   signedPdfUrl?: string;
   message?: string;
 }
 
-/**
- * Simulates sending a PDF to a server for signing
- * In a real implementation, this would make an API call to a backend service
- */
 export async function signPdfDocument(file: File): Promise<SigningResponse> {
-  // Simulate network delay (1-3 seconds)
-  const delay = 1500 + Math.random() * 1500;
+ const delay = 1500 + Math.random() * 1500;
   
   await new Promise(resolve => setTimeout(resolve, delay));
   
