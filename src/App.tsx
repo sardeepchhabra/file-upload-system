@@ -80,7 +80,7 @@ export default function App() {
 
         {/* Footer */}
         <div className="text-center mt-12 text-sm text-gray-500">
-          <p>Secure • Fast • Mobile-Friendly</p>
+          <p>Secure • Fast</p>
         </div>
       </div>
     </div>
