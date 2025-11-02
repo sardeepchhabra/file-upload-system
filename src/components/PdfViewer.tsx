@@ -1,10 +1,16 @@
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { Download, CheckCircle2, RotateCcw } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Document, Page, pdfjs } from "react-pdf";
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import "react-pdf/dist/Page/TextLayer.css";
-import { useEffect, useState } from "react";
+
+// import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+// import "react-pdf/dist/esm/Page/TextLayer.css";
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.js",
+  import.meta.url
+).toString();
 
 interface PdfViewerProps {
   pdfUrl: string;
@@ -12,34 +18,62 @@ interface PdfViewerProps {
   onReset: () => void;
 }
 
-export function PdfViewer({ pdfUrl, fileName, onReset }: PdfViewerProps) {
+function PdfViewerComponent({ pdfUrl, fileName, onReset }: PdfViewerProps) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [error, setError] = useState<string | null>(null);
+  const viewerRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
-  }, []);
+  const pageWidth = useMemo(
+    () =>
+      Math.min(
+        600,
+        typeof window !== "undefined" ? window.innerWidth - 40 : 600
+      ),
+    []
+  );
 
-  const handleDownload = () => {
+  const handleDownload = useCallback(() => {
     const link = document.createElement("a");
     link.href = pdfUrl;
     link.download = `signed_${fileName}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
+  }, [pdfUrl, fileName]);
 
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages);
-    setPageNumber(1);
-    setError(null);
-  };
+  const onDocumentLoadSuccess = useCallback(
+    ({ numPages }: { numPages: number }) => {
+      setNumPages(numPages);
+      setPageNumber(1);
+      setError(null);
+    },
+    []
+  );
 
-  const onDocumentLoadError = (error: Error) => {
+  const onDocumentLoadError = useCallback((error: Error) => {
     console.error("Error loading PDF:", error);
     setError(error.message);
-  };
+  }, []);
+
+  const goToPrevPage = useCallback(() => {
+    setPageNumber((p) => Math.max(1, p - 1));
+    viewerRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, []);
+
+  const goToNextPage = useCallback(() => {
+    setPageNumber((p) => Math.min(numPages ?? 1, p + 1));
+    viewerRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [numPages]);
+
+  const pdfOptions = useMemo(
+    () => ({
+      cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+      cMapPacked: true,
+      standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
+    }),
+    []
+  );
 
   return (
     <div className="space-y-4">
@@ -47,7 +81,9 @@ export function PdfViewer({ pdfUrl, fileName, onReset }: PdfViewerProps) {
         <div className="flex items-center space-x-3">
           <CheckCircle2 className="h-6 w-6 text-green-600 flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-green-900">Document Successfully Signed</p>
+            <p className="text-green-900 font-medium">
+              Document Successfully Signed
+            </p>
             <p className="text-sm text-green-700 truncate">{fileName}</p>
           </div>
         </div>
@@ -58,19 +94,19 @@ export function PdfViewer({ pdfUrl, fileName, onReset }: PdfViewerProps) {
           <span className="text-sm text-gray-700">Signed PDF Preview</span>
           <div className="flex gap-2">
             <Button onClick={handleDownload} variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-1" />
-              Download
+              <Download className="h-4 w-4 mr-1" /> Download
             </Button>
             <Button onClick={onReset} variant="outline" size="sm">
-              <RotateCcw className="h-4 w-4 mr-1" />
-              New
+              <RotateCcw className="h-4 w-4 mr-1" /> New
             </Button>
           </div>
         </div>
-
-        {/* Responsive PDF preview using react-pdf */}
-        <div className="bg-gray-100 p-4 flex flex-col items-center justify-center min-h-[400px]">
+        <div
+          ref={viewerRef}
+          className="bg-gray-100 p-4 flex flex-col items-center justify-center min-h-[400px]"
+        >
           <Document
+            // key={pdfUrl}
             file={pdfUrl}
             onLoadSuccess={onDocumentLoadSuccess}
             onLoadError={onDocumentLoadError}
@@ -91,21 +127,14 @@ export function PdfViewer({ pdfUrl, fileName, onReset }: PdfViewerProps) {
                 </p>
               </div>
             }
-            options={{
-              cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
-              cMapPacked: true,
-              standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
-            }}
+            options={pdfOptions}
             className="w-full flex flex-col items-center"
           >
             <Page
               pageNumber={pageNumber}
-              renderTextLayer={true}
-              renderAnnotationLayer={true}
-              width={Math.min(
-                600,
-                typeof window !== "undefined" ? window.innerWidth - 40 : 600
-              )}
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
+              width={pageWidth}
               className="shadow-lg"
             />
           </Document>
@@ -115,7 +144,7 @@ export function PdfViewer({ pdfUrl, fileName, onReset }: PdfViewerProps) {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => setPageNumber((p) => Math.max(1, p - 1))}
+                onClick={goToPrevPage}
                 disabled={pageNumber <= 1}
               >
                 Prev
@@ -126,7 +155,7 @@ export function PdfViewer({ pdfUrl, fileName, onReset }: PdfViewerProps) {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => setPageNumber((p) => Math.min(numPages, p + 1))}
+                onClick={goToNextPage}
                 disabled={pageNumber >= numPages}
               >
                 Next
@@ -135,8 +164,8 @@ export function PdfViewer({ pdfUrl, fileName, onReset }: PdfViewerProps) {
           )}
         </div>
 
-        {/* Iframe fallback for comparison */}
-        <div className="bg-gray-100 mt-4 border-t border-gray-200">
+        {/* Fallback Iframe */}
+        {/* <div className="bg-gray-100 mt-4 border-t border-gray-200">
           <div className="p-2 bg-gray-50 text-xs text-gray-600 text-center">
             Alternative View (iframe)
           </div>
@@ -144,8 +173,9 @@ export function PdfViewer({ pdfUrl, fileName, onReset }: PdfViewerProps) {
             src={pdfUrl}
             className="w-full h-[60vh] sm:h-[70vh] border-0"
             title="Signed PDF Document (iframe preview)"
+            loading="lazy"
           />
-        </div>
+        </div> */}
       </Card>
 
       <div className="text-center">
@@ -156,3 +186,5 @@ export function PdfViewer({ pdfUrl, fileName, onReset }: PdfViewerProps) {
     </div>
   );
 }
+
+export const PdfViewer = memo(PdfViewerComponent);
