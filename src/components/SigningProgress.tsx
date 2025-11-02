@@ -1,7 +1,7 @@
-import { Loader2, Shield } from 'lucide-react';
-import { Card } from './ui/card';
-import { Progress } from './ui/progress';
-import { useEffect, useState } from 'react';
+import { Loader2, Shield } from "lucide-react";
+import { Card } from "./ui/card";
+import { Progress } from "./ui/Progress";
+import { useEffect, useState } from "react";
 
 interface SigningProgressProps {
   fileName: string;
@@ -27,15 +27,13 @@ export function SigningProgress({ fileName }: SigningProgressProps) {
         <div className="rounded-full bg-blue-100 p-4 animate-pulse">
           <Shield className="h-12 w-12 text-blue-600" />
         </div>
-        
+
         <div className="text-center space-y-2 w-full">
           <div className="flex items-center justify-center space-x-2">
             <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
             <h2 className="text-gray-900">Signing Document</h2>
           </div>
-          <p className="text-gray-600 text-sm truncate px-4">
-            {fileName}
-          </p>
+          <p className="text-gray-600 text-sm truncate px-4">{fileName}</p>
         </div>
 
         <div className="w-full space-y-2">
