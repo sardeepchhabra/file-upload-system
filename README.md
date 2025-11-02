@@ -5,6 +5,7 @@ A modern, secure, and fast web application for digitally signing PDF documents. 
 ---
 
 ## Features
+
 - Upload PDF documents for digital signing
 - View signing progress and status
 - Download/view signed PDF
@@ -12,6 +13,7 @@ A modern, secure, and fast web application for digitally signing PDF documents. 
 - Built with professional, maintainable code structure
 
 ## Tech Stack
+
 - **React** (with Hooks)
 - **TypeScript**
 - **Vite** (for fast development and builds)
@@ -56,21 +58,56 @@ src/
    Visit [http://localhost:5173](http://localhost:5173)
 
 ## Usage
+
 - Click **Upload** to select a PDF file.
 - The app will show signing progress.
 - Once signed, you can view or download the signed PDF.
 - Click **Reset** to start over.
 
 ## Customization
+
 - UI components are located in `src/components/ui/` and are easily reusable.
 - PDF logic is in `src/components/pdf/` and `src/utils/mockSigningService.ts`.
 - Tailwind CSS can be customized in `tailwind.config.js` (if present).
 
 ## Credits
+
 - [shadcn/ui](https://ui.shadcn.com/) for UI patterns
 - [Radix UI](https://www.radix-ui.com/) for accessible primitives
 - [Vite](https://vitejs.dev/) for build tooling
 - [Tailwind CSS](https://tailwindcss.com/) for styling
+
+## Test Cases
+
+This project uses Jest and React Testing Library for unit and integration testing.
+
+Testing Stack
+
+- Jest – Testing framework
+- React Testing Library – DOM rendering and user event simulation
+- Jest DOM – Extended matchers for cleaner assertions
+- ts-jest – TypeScript support
+- jsdom – Browser-like environment for React components
+
+Test Coverage
+
+- UI Components (Button, Card, Input, Progress)
+- PDF Upload and validation (PdfUploader)
+- PDF Viewing, pagination, and download (PdfViewer)
+
+Running Tests:
+
+# Run all tests
+
+npm test
+
+# Run in watch mode
+
+npm test -- --watch
+
+# Generate coverage report
+
+npm test -- --coverage
 
 ---
 
