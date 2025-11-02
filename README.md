@@ -26,10 +26,9 @@ src/
   App.tsx                # Main application logic and state
   main.tsx               # React entry point
   components/
-    pdf/
-      PdfUploader.tsx    # Component for uploading PDFs
-      PdfViewer.tsx      # Component for viewing signed PDFs
-      SigningProgress.tsx# Component for showing signing progress
+    PdfUploader.tsx    # Component for uploading PDFs
+    PdfViewer.tsx      # Component for viewing signed PDFs
+    SigningProgress.tsx# Component for showing signing progress
     ui/
       Button.tsx         # Reusable button component
       Card.tsx           # Reusable card component
