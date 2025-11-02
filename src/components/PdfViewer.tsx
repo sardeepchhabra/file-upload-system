@@ -1,11 +1,8 @@
 import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { Download, CheckCircle2, RotateCcw } from "lucide-react";
-import { Button } from "./ui/button";
-import { Card } from "./ui/card";
+import { Button } from "./ui/Button";
+import { Card } from "./ui/Card";
 import { Document, Page, pdfjs } from "react-pdf";
-
-// import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-// import "react-pdf/dist/esm/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",

@@ -1,7 +1,7 @@
-import { useRef } from 'react';
-import { Upload, FileText } from 'lucide-react';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
+import { useRef } from "react";
+import { Upload, FileText } from "lucide-react";
+import { Button } from "./ui/Button";
+import { Card } from "./ui/Card";
 
 interface PdfUploaderProps {
   onFileSelect: (file: File) => void;
@@ -13,10 +13,10 @@ export function PdfUploader({ onFileSelect, isProcessing }: PdfUploaderProps) {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && file.type === 'application/pdf') {
+    if (file && file.type === "application/pdf") {
       onFileSelect(file);
     } else if (file) {
-      alert('Please select a valid PDF file');
+      alert("Please select a valid PDF file");
     }
   };
 
@@ -30,7 +30,7 @@ export function PdfUploader({ onFileSelect, isProcessing }: PdfUploaderProps) {
         <div className="rounded-full bg-blue-100 p-4">
           <FileText className="h-12 w-12 text-blue-600" />
         </div>
-        
+
         <div className="text-center space-y-2">
           <h2 className="text-gray-900">Upload PDF Document</h2>
           <p className="text-gray-600 text-sm">
@@ -45,6 +45,7 @@ export function PdfUploader({ onFileSelect, isProcessing }: PdfUploaderProps) {
           onChange={handleFileChange}
           className="hidden"
           disabled={isProcessing}
+          data-testid="file-input"
         />
 
         <Button
@@ -54,7 +55,7 @@ export function PdfUploader({ onFileSelect, isProcessing }: PdfUploaderProps) {
           size="lg"
         >
           <Upload className="mr-2 h-5 w-5" />
-          {isProcessing ? 'Processing...' : 'Choose PDF File'}
+          {isProcessing ? "Processing..." : "Choose PDF File"}
         </Button>
 
         <p className="text-xs text-gray-500 text-center">

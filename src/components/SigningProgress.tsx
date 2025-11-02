@@ -1,5 +1,5 @@
 import { Loader2, Shield } from "lucide-react";
-import { Card } from "./ui/card";
+import { Card } from "./ui/Card";
 import { Progress } from "./ui/Progress";
 import { useEffect, useState } from "react";
 

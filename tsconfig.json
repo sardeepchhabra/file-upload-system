@@ -1,5 +1,31 @@
 {
-  "files": [],
+  "compilerOptions": {
+    /* === Module & JSX Settings === */
+    "target": "ESNext",                      // modern output
+    "module": "commonjs",                    // ✅ needed for Jest (ESNext breaks Jest)
+    "jsx": "react-jsx",                      // React 17+ JSX transform
+
+    /* === Interop & Imports === */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+
+    /* === Type Checking === */
+    "strict": true,
+    "skipLibCheck": true,
+
+    /* === Paths (optional) === */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    /* === Output === */
+    "outDir": "dist",
+    "isolatedModules": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"],
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
